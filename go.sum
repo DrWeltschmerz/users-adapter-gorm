@@ -1,7 +1,7 @@
-github.com/DrWeltschmerz/users-core v1.0.0 h1:YRs/7jVIxiPbtdiQ7Dd6VEQbqoRQ5Q96wgudFIoQeyQ=
-github.com/DrWeltschmerz/users-core v1.0.0/go.mod h1:GDJ1JFPKDA60WJ7QLD2gihdl1FeRBGwGwIgQML8j+EA=
 github.com/DrWeltschmerz/users-core v1.0.1 h1:LRR4UYriMLPjIOc/UsPaJ9A31ssPigCvB/9JL/zkzlg=
 github.com/DrWeltschmerz/users-core v1.0.1/go.mod h1:GDJ1JFPKDA60WJ7QLD2gihdl1FeRBGwGwIgQML8j+EA=
+github.com/DrWeltschmerz/users-core v1.0.2 h1:jfTEbie8cMD833Ar/H5laBhTobtycmW/QPjoREgigJY=
+github.com/DrWeltschmerz/users-core v1.0.2/go.mod h1:GDJ1JFPKDA60WJ7QLD2gihdl1FeRBGwGwIgQML8j+EA=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/jinzhu/inflection v1.0.0 h1:K317FqzuhWc8YvSVlFMCCUb36O/S9MCKRDI7QkRKD/E=

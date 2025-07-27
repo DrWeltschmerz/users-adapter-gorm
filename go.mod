@@ -3,7 +3,7 @@ module github.com/DrWeltschmerz/users-adapter-gorm
 go 1.24.5
 
 require (
-	github.com/DrWeltschmerz/users-core v1.0.1
+	github.com/DrWeltschmerz/users-core v1.0.2
 	github.com/stretchr/testify v1.10.0
 	gorm.io/driver/sqlite v1.6.0
 	gorm.io/gorm v1.30.1
