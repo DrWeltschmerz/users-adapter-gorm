@@ -1,73 +1,63 @@
 # users-adapter-gorm
 
-Gorm adapter for modular user system
-
-## Overview
-
-This package provides Gorm-based implementations of user and role repositories for the [`users-core`](https://github.com/DrWeltschmerz/users-core) modular user system.
+GORM adapter for [users-core](https://github.com/DrWeltschmerz/users-core).
 
 ## Features
 
-- Gorm models for users and roles
-- Repository implementations for CRUD operations on users and roles
-- Conversion utilities between core and Gorm models
-- Comprehensive unit tests using SQLite in-memory DB
-
-## Project Structure
-
-```
-.
-├── gorm/
-│   ├── gorm_adapter_test.go   # Unit tests for repositories
-│   ├── role.go                # GormRole model
-│   ├── role_repository.go     # GormRoleRepository implementation
-│   ├── user.go                # GormUser model
-│   ├── user_repository.go     # GormUserRepository implementation
-│   └── utils.go               # Conversion and parsing utilities
-├── go.mod
-├── go.sum
-├── LICENSE
-└── README.md
-```
+- Implements `UserRepository` and `RoleRepository` interfaces using GORM
+- Conversion utilities between core and GORM models
 
 ## Usage
 
-1. **Install dependencies**  
-   Make sure you have Go 1.18+ and run:
-   ```sh
-   go mod tidy
-   ```
+```go
+import (
+    "github.com/DrWeltschmerz/users-core"
+    gormadapter "github.com/DrWeltschmerz/users-adapter-gorm/gorm"
+    "gorm.io/driver/sqlite"
+    "gorm.io/gorm"
+)
 
-2. **Initialize Gorm and repositories**
-   ```go
-   import (
-       "gorm.io/driver/sqlite"
-       "gorm.io/gorm"
-       adapter "github.com/DrWeltschmerz/users-adapter-gorm/gorm"
-   )
+db, _ := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
+db.AutoMigrate(&gormadapter.GormUser{}, &gormadapter.GormRole{})
 
-   db, err := gorm.Open(sqlite.Open("your.db"), &gorm.Config{})
-   if err != nil {
-       // handle error
-   }
+userRepo := gormadapter.NewGormUserRepository(db)
+roleRepo := gormadapter.NewGormRoleRepository(db)
+```
 
-   // Auto-migrate models
-   db.AutoMigrate(&adapter.GormUser{}, &adapter.GormRole{})
-
-   userRepo := adapter.NewGormUserRepository(db)
-   roleRepo := adapter.NewGormRoleRepository(db)
-   ```
-
-3. **Implement the `users-core` interfaces**  
-   The repositories implement the `core.UserRepository` and `core.RoleRepository` interfaces from [`users-core`](https://github.com/DrWeltschmerz/users-core).
+Use these repositories with the [`users-core` service](https://github.com/DrWeltschmerz/users-core).
 
 ## Testing
 
-Run all tests with:
+Run integration tests with:
+
 ```sh
-go test ./gorm/...
+go test ./gorm
 ```
 
 ## License
 
 This project is licensed under the GNU GPL v3. See [LICENSE](LICENSE) for details.
+
+
+## How to Use All Modules Together
+
+1. **Set up your database** (e.g. SQLite, PostgreSQL).
+2. **Auto-migrate** the GORM models (`GormUser`, `GormRole`).
+3. **Create GORM repositories** from [users-adapter-gorm](https://github.com/DrWeltschmerz/users-adapter-gorm).
+4. **Create a hasher** from [jwt-auth](https://github.com/DrWeltschmerz/jwt-auth).
+5. **Create the service** from [users-core](https://github.com/DrWeltschmerz/users-core) using the above.
+6. **Use the service** for user management in your app.
+
+
+## TODO
+
+- [ ] Create a Gin adapter to expose the service as a REST API (see [gin-gonic/gin](https://github.com/gin-gonic/gin)) (In Progress)
+- [ ] Consider adding support for additional features:
+    - Email verification and password reset flows
+    - User profile endpoints
+    - Role-based access control helpers
+    - Activity/audit logging
+    - OAuth2/social login integration
+    - Rate limiting and brute-force protection
+- [ ] Improve documentation and add more usage examples
+- [ ] Expand integration test coverage
