@@ -28,22 +28,47 @@ func (r *GormUserRepository) Create(ctx context.Context, user core.User) (*core.
 }
 
 func (r *GormUserRepository) Update(ctx context.Context, user core.User) (*core.User, error) {
-	gormUser, err := coreToGormUser(&user)
+	// Fetch current user from DB
+	var current GormUser
+	gormID, err := ParseStringUint(user.ID)
 	if err != nil {
 		return nil, err
 	}
-	updates := map[string]interface{}{
-		"username":        gormUser.Username,
-		"email":           gormUser.Email,
-		"hashed_password": gormUser.HashedPassword,
-		"role_id":         gormUser.RoleID,
-		"last_seen":       gormUser.LastSeen,
+	if err := r.db.WithContext(ctx).First(&current, gormID).Error; err != nil {
+		return nil, err
 	}
-	if err := r.db.WithContext(ctx).Model(&GormUser{}).Where("id = ?", gormUser.ID).Updates(updates).Error; err != nil {
+
+	// Only update fields that are non-zero in input
+	updates := map[string]interface{}{}
+	if user.Username != "" {
+		updates["username"] = user.Username
+	}
+	if user.Email != "" {
+		updates["email"] = user.Email
+	}
+	if user.HashedPassword != "" {
+		updates["hashed_password"] = user.HashedPassword
+	}
+	if user.RoleID != "" {
+		roleID, err := ParseStringUint(user.RoleID)
+		if err == nil {
+			updates["role_id"] = roleID
+		}
+	}
+	if !user.LastSeen.IsZero() {
+		updates["last_seen"] = user.LastSeen
+	}
+
+	if len(updates) == 0 {
+		// Nothing to update
+		return gormToCoreUser(&current), nil
+	}
+
+	if err := r.db.WithContext(ctx).Model(&GormUser{}).Where("id = ?", gormID).Updates(updates).Error; err != nil {
 		return nil, err
 	}
 	var updated GormUser
-	if err := r.db.WithContext(ctx).First(&updated, gormUser.ID).Error; err != nil {
+	if err := r.db.WithContext(ctx).First(&updated, gormID).Error; err != nil {
 		return nil, err
 	}
 	return gormToCoreUser(&updated), nil
@@ -61,6 +86,7 @@ func (r *GormUserRepository) GetByID(ctx context.Context, id string) (*core.User
 		}
 		return nil, err
 	}
+		// ...existing code...
 	return gormToCoreUser(&gormUser), nil
 }
 
